@@ -104,7 +104,33 @@ Relations SHOULD have stable IDs if they are long-lived or addressable:
 
 - `rel://world/attach/Player42->Weapon7`
 
-If relation IDs are omitted, relations MUST still be uniquely addressable by `(from, to, kind, attributes hash)` within a snapshot.
+If relation IDs are omitted, relations MUST still be uniquely addressable by `(from, to, kind, attributesHash)` within a snapshot.
+
+### 5.2.1 Relation addressing without IDs (normative)
+
+When a relation omits `id`, clients MUST be able to refer to it using a **relation key**.
+
+Define `attributesHash` as:
+- Let `attributes` be the relation `attributes` object (or `{}` if omitted).
+- Canonicalize `attributes` using the JSON Canonicalization Scheme (JCS, RFC 8785) and UTF‑8 bytes.
+- Compute `SHA-256` over the canonical bytes and represent it as `sha256:<lowercase-hex>`.
+
+A relation key is:
+
+```json
+{
+  "from": "render://object/42",
+  "to": "world://entity/Player/42",
+  "kind": "ogif:facetOf",
+  "directed": true,
+  "attributesHash": "sha256:..."
+}
+```
+
+Rules:
+- For key computation, if `directed` is omitted it MUST be treated as `true`.
+- An endpoint MUST NOT emit two relations in the same snapshot with the same relation key.
+- Any event or API result that needs to reference a relation MUST provide either `id` or a relation key.
 
 ### 5.3 Namespaces and Domains
 
@@ -135,7 +161,7 @@ An OGIF entity MUST be representable as JSON with at least:
 }
 ```
 
-#### Required Fields
+#### Required Fields (full entity form)
 
 * `id` (string)
 * `type` (string)
@@ -144,11 +170,55 @@ An OGIF entity MUST be representable as JSON with at least:
 * `attributes` (object; MAY be empty)
 * `meta` (object; MAY be empty)
 
+#### Disclosure-limited stubs (policy/redaction)
+
+Endpoints MAY return a disclosure-limited **stub** entity (e.g., due to authorization or redaction). A stub MUST be a JSON object that includes at least:
+
+* `id` (string)
+* `type` (string)
+
+A stub SHOULD include `meta.redacted=true` when fields are omitted due to policy.
+
 #### Recommended Fields
 
 * `name` (string)
 * `description` (string)
 * `schemaRef` (string; see §6.5)
+
+### 6.1.1 Entity read method (JSON-RPC recommended)
+
+`ogif.getEntity` reads one entity by id.
+
+Request (recommended):
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "ogif.getEntity",
+  "params": {
+    "id": "world://entity/Player/42",
+    "include": "full"
+  }
+}
+```
+
+Rules:
+- `include` SHOULD be one of: `existence | metadata | full` (default: `metadata`).
+- Responses MUST include the `revision` they reflect.
+
+Response (recommended):
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "result": {
+    "revision": "rev-1048",
+    "entity": { "id": "world://entity/Player/42", "type": "ogif.entity" }
+  }
+}
+```
 
 ### 6.2 Relation Schema (Core)
 
@@ -196,6 +266,71 @@ Example:
   "profiles": ["ogif-core-0"],
   "entities": [ /* ... */ ],
   "relations": [ /* ... */ ]
+}
+```
+
+#### Optional paging (recommended)
+
+For large graphs, an endpoint MAY return snapshots in pages.
+
+If paging is used, the snapshot SHOULD include:
+
+```json
+{
+  "page": {
+    "isPartial": true,
+    "nextCursor": "opaque-string"
+  }
+}
+```
+
+Rules:
+- If `page.isPartial == true`, the returned `entities` / `relations` lists are incomplete.
+- To continue, clients MUST call `ogif.getGraph` with `cursor=page.nextCursor`.
+- When no more pages remain, `page.nextCursor` MUST be `null` (or `page` MAY be omitted entirely).
+- Paging order MUST be deterministic for a given revision. If an endpoint does not specify an order, the RECOMMENDED default is:
+  - entities ordered by `id` ascending
+  - relations ordered by `(from, kind, to, attributesHash)` ascending
+
+### 6.3.1 Graph snapshot method (JSON-RPC recommended)
+
+`ogif.getGraph` returns the current graph snapshot (possibly paged).
+
+Request (recommended):
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "ogif.getGraph",
+  "params": {
+    "graphId": "myapp://runtime",
+    "include": "metadata",
+    "maxEntities": 5000,
+    "maxRelations": 20000,
+    "cursor": null
+  }
+}
+```
+
+Rules:
+- `include` SHOULD be one of: `existence | metadata | full` (default: `metadata`).
+- `cursor` MUST be treated as opaque by clients.
+- Responses MUST include the `revision` they reflect.
+
+Response (recommended):
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "result": {
+    "graphId": "myapp://runtime",
+    "revision": "rev-1048",
+    "profiles": ["ogif-core-0"],
+    "entities": [],
+    "relations": []
+  }
 }
 ```
 
@@ -376,6 +511,70 @@ Subscriptions MUST support filtering by:
 * entity selector (see §9),
 * optionally relation selector.
 
+#### 8.2.1 `ogif.subscribe` / `ogif.unsubscribe` (JSON-RPC recommended)
+
+`ogif.subscribe` establishes an event stream filtered by event type and optional selectors.
+
+Request params (recommended):
+- `types` (array of event type strings)
+- `selector` (string; optional; OGIF-SEL-0 minimum; see §9)
+- `fromRevision` (string | number; optional; resume token)
+
+Request example:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 6,
+  "method": "ogif.subscribe",
+  "params": {
+    "types": ["ogif.event:StateChanged"],
+    "selector": "type(\"world.entity\")",
+    "fromRevision": null
+  }
+}
+```
+
+Response (recommended):
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 6,
+  "result": {
+    "subscriptionId": "sub-1",
+    "revision": "rev-1049"
+  }
+}
+```
+
+Rules:
+- If `fromRevision` is provided, the endpoint SHOULD resume from that token. If it cannot, it MUST fail the request rather than silently skipping history.
+- The response MUST include the `revision` at which the subscription is established.
+
+For JSON-RPC transports, the RECOMMENDED delivery mechanism is notifications:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "ogif.event",
+  "params": {
+    "subscriptionId": "sub-1",
+    "event": {
+      "eventId": "evt-000123",
+      "type": "ogif.event:StateChanged",
+      "timestamp": "2026-02-21T12:34:56.123Z",
+      "source": "world://entity/Player/42",
+      "data": { "revision": "rev-1050", "patch": [] },
+      "meta": { "correlationId": "corr-abc", "reliability": "best_effort" }
+    }
+  }
+}
+```
+
+`ogif.unsubscribe` request params (recommended):
+- `subscriptionId` (string)
+
 ### 8.3 Required Core Event Types
 
 An endpoint that supports mutable graphs MUST emit at least one of:
@@ -461,10 +660,73 @@ Endpoints MAY implement richer query languages, but MUST support OGIF-SEL-0.
 
 ### 9.3 Query Methods (JSON-RPC Recommended)
 
-* `ogif.queryEntities({ selector, limit, include })`
-* `ogif.queryRelations({ selector, limit })`
+OGIF provides selector-based queries for entities and relations.
 
-Return value SHOULD include matched IDs and current `revision`.
+#### 9.3.1 `ogif.queryEntities`
+
+Request params (recommended):
+- `selector` (string; OGIF-SEL-0 minimum; see §9.1)
+- `limit` (integer; optional; endpoint may clamp)
+- `include` (`existence | metadata | full`; optional; default `metadata`)
+- `cursor` (string | null; optional; opaque paging cursor)
+
+Request example:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "method": "ogif.queryEntities",
+  "params": {
+    "selector": "type(\"rpc.method\")",
+    "limit": 100,
+    "include": "metadata",
+    "cursor": null
+  }
+}
+```
+
+Response (recommended):
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "result": {
+    "revision": "rev-1048",
+    "entities": [],
+    "page": { "nextCursor": null }
+  }
+}
+```
+
+Rules:
+- Responses MUST include the `revision` they reflect.
+- Paging order MUST be deterministic for a given revision. If an endpoint does not specify an order, the RECOMMENDED default is entities ordered by `id` ascending.
+
+#### 9.3.2 `ogif.queryRelations`
+
+Request params (recommended):
+- `selector` (string; see §9.1)
+- `limit` (integer; optional; endpoint may clamp)
+- `cursor` (string | null; optional; opaque paging cursor)
+
+Response (recommended):
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 5,
+  "result": {
+    "revision": "rev-1048",
+    "relations": [],
+    "page": { "nextCursor": null }
+  }
+}
+```
+
+Rules:
+- Paging order MUST be deterministic for a given revision. If an endpoint does not specify an order, the RECOMMENDED default is relations ordered by `(from, kind, to, attributesHash)` ascending.
 
 ---
 
@@ -565,6 +827,7 @@ If an endpoint claims **OGIF-Core Control**, it MUST implement:
 * `ogif.getGraph` (snapshot)
 * `ogif.getEntity`
 * `ogif.queryEntities`
+* `ogif.queryRelations`
 * `ogif.invoke`
 * `ogif.subscribe`
 * `ogif.unsubscribe`
@@ -575,6 +838,7 @@ If an endpoint is **read-only**, it MUST still implement:
 * `ogif.getGraph`
 * `ogif.getEntity`
 * `ogif.queryEntities`
+* `ogif.queryRelations`
 * `ogif.subscribe` (optional but RECOMMENDED)
 
 ### 12.2 Version Negotiation
@@ -584,7 +848,8 @@ If an endpoint is **read-only**, it MUST still implement:
 * spec name/version,
 * supported profiles,
 * supported selector version,
-* supported patch format.
+* supported patch format,
+* and SHOULD return feature flags relevant to interoperability (e.g., paging, event replay).
 
 Example:
 
@@ -598,7 +863,9 @@ Example:
     "profiles": ["ogif-core-0"],
     "features": {
       "selectors": "ogif-sel-0",
-      "patch": "rfc6902"
+      "patch": "rfc6902",
+      "paging": true,
+      "eventReplay": false
     }
   }
 }
@@ -615,6 +882,7 @@ Endpoints SHOULD use stable error codes:
 * `-32005` operation rejected (precondition failed)
 * `-32006` timeout
 * `-32007` rate limited
+* `-32008` resync required (invalid/expired revision or cursor)
 
 ---
 
