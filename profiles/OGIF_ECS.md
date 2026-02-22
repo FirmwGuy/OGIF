@@ -1,5 +1,5 @@
 # OmniECS Profile Specification
-## OGIF Profile: EntityñComponentñSystem Worlds, Ticks, Determinism, and Cross-Subsystem Facets
+## OGIF Profile: Entity‚ÄìComponent‚ÄìSystem Worlds, Ticks, Determinism, and Cross-Subsystem Facets
 
 **Profile Name:** OmniECS  
 **OGIF Profile ID:** `ogif.profile:omniecs-0`  
@@ -13,7 +13,7 @@
 
 ## 1. Purpose
 
-OmniECS is an OGIF profile for representing and controlling **simulation ìworldsî** and **game-like state** using an EntityñComponentñSystem (ECS) paradigm.
+OmniECS is an OGIF profile for representing and controlling **simulation ‚Äúworlds‚Äù** and **game-like state** using an Entity‚ÄìComponent‚ÄìSystem (ECS) paradigm.
 
 It models:
 - **worlds** (simulation contexts),
@@ -77,16 +77,16 @@ OmniECS defines reserved OGIF entity `type` values.
 
 An OmniECS endpoint MUST represent at least:
 
-- `ecs.world` ó simulation context root
-- `ecs.entity` ó ECS entity identity (no required internal structure)
-- `ecs.component` ó typed component instance attached to an entity
-- `ecs.system` ó system processor (physics, AI, combat, etc.)
+- `ecs.world` ‚Äî simulation context root
+- `ecs.entity` ‚Äî ECS entity identity (no required internal structure)
+- `ecs.component` ‚Äî typed component instance attached to an entity
+- `ecs.system` ‚Äî system processor (physics, AI, combat, etc.)
 
 ### 5.2 Optional Types (Recommended)
 
-- `ecs.archetype` ó a canonical grouping by component set
-- `ecs.eventStream` ó explicit event stream entity (if events are partitioned)
-- `ecs.tag` ó tag-like components without state (optional representation)
+- `ecs.archetype` ‚Äî a canonical grouping by component set
+- `ecs.eventStream` ‚Äî explicit event stream entity (if events are partitioned)
+- `ecs.tag` ‚Äî tag-like components without state (optional representation)
 
 ---
 
@@ -147,7 +147,7 @@ Component type strings SHOULD be stable and namespaced if necessary:
 
 Components SHOULD declare:
 
-- `attributes.schemaRef` (URI identifying the componentís data schema)
+- `attributes.schemaRef` (URI identifying the component‚Äôs data schema)
 
 Example:
 ```json
@@ -161,11 +161,11 @@ Example:
   },
   "state": { "current": 95, "max": 100 }
 }
-````
+```
 
 ### 7.3 Component State Location (MUST)
 
-Component data MUST be stored in the component entityís `state` object.
+Component data MUST be stored in the component entity‚Äôs `state` object.
 
 * The state MUST be patchable (RFC 6902 JSON Patch RECOMMENDED).
 * If the component data is too large to include, the endpoint MAY provide:
@@ -200,7 +200,7 @@ OmniECS assumes systems update state in discrete ticks/frames for determinism.
 If a system is continuous-time, it SHOULD still expose:
 
 * a logical tick counter for observability, or
-* a time-stepped ìobservation tickî in test mode.
+* a time-stepped ‚Äúobservation tick‚Äù in test mode.
 
 ---
 
@@ -333,7 +333,7 @@ OmniECS reserves these capability tokens:
 
 ### 11.2 Core Control Operations (Optional; Required for Control Conformance)
 
-If an endpoint claims **OmniECS-Control Conformance** (ß16.2), it MUST support:
+If an endpoint claims **OmniECS-Control Conformance** (¬ß16.2), it MUST support:
 
 #### 11.2.1 `ecs.spawn`
 
@@ -443,7 +443,7 @@ Endpoints SHOULD return structured rejection errors with stable codes (deploymen
 * `ecs.event:Error` (optional), and/or
 * OGIF state changes.
 
-### 12.2 No ìCheat Surfaceî by Default (RECOMMENDED)
+### 12.2 No ‚ÄúCheat Surface‚Äù by Default (RECOMMENDED)
 
 In production builds, endpoints SHOULD:
 
@@ -552,15 +552,15 @@ If an event would leak restricted state, the endpoint MUST either:
 An endpoint is OmniECS-Read conformant if it:
 
 * exposes `ecs.world`, `ecs.entity`, `ecs.component`, `ecs.system` entities (as applicable),
-* enforces `ecs:inWorld` and `ecs:hasComponent` constraints (ß6.2ñß6.3),
+* enforces `ecs:inWorld` and `ecs:hasComponent` constraints (¬ß6.2‚Äì¬ß6.3),
 * allows querying entities/components via OGIF selectors (and ideally `ecs-sel-0`),
-* emits observable lifecycle/state changes via OGIF patches and SHOULD emit core `ecs.event:*` events (ß10).
+* emits observable lifecycle/state changes via OGIF patches and SHOULD emit core `ecs.event:*` events (¬ß10).
 
 ### 16.2 OmniECS-Control Conformance
 
 Includes OmniECS-Read and additionally:
 
-* supports spawn/despawn and component mutation operations (ß11.2),
+* supports spawn/despawn and component mutation operations (¬ß11.2),
 * validates mutations against schemas/rules,
 * emits appropriate events/patches reflecting changes.
 

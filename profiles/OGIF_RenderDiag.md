@@ -20,12 +20,12 @@ OmniRenderDiag is an OGIF profile that exposes **stable, semantic render diagnos
 - complex HUDs,
 - composited scenes with cameras, passes, and object visibility.
 
-The goal is to enable robust automation and testing of ìwhat is being renderedî **without** relying on:
+The goal is to enable robust automation and testing of ‚Äúwhat is being rendered‚Äù **without** relying on:
 - screenshots or pixel diffs (CV/golden images),
 - brittle coordinate scraping,
 - waveform-like comparisons for media.
 
-Instead, OmniRenderDiag exposes **render facts** that are strongly correlated with the userís perception and interaction, such as:
+Instead, OmniRenderDiag exposes **render facts** that are strongly correlated with the user‚Äôs perception and interaction, such as:
 - which semantic objects are visible/drawn,
 - object picking hit results,
 - camera transforms/projection parameters,
@@ -50,7 +50,7 @@ An OmniRenderDiag implementation MUST allow a client to:
 4. **Query visibility**: which objects are considered drawn/visible for a given scene/camera/frame.
 5. **Query projected bounds** for objects in a stable coordinate space (normalized).
 6. **Observe** frame boundaries and render-level errors/alerts.
-7. Enforce security boundaries so diagnostics do not become an ìESP/wallhackî surface in production.
+7. Enforce security boundaries so diagnostics do not become an ‚ÄúESP/wallhack‚Äù surface in production.
 
 ---
 
@@ -64,7 +64,7 @@ OmniRenderDiag does NOT standardize:
 - physics correctness (OmniECS/physics facets),
 - UI semantics (OmniDOM).
 
-If exact visuals are required, pixel-based golden rendering is still valid in some contexts, but it is outside this profileís scope.
+If exact visuals are required, pixel-based golden rendering is still valid in some contexts, but it is outside this profile‚Äôs scope.
 
 ---
 
@@ -88,18 +88,18 @@ Endpoints MUST advertise `ogif.profile:omnirenderdiag-0` via `ogif.getVersion`.
 
 An OmniRenderDiag endpoint MUST represent:
 
-- `render.scene` ó a renderable scene/context (may correspond to a viewport, layer, world camera)
-- `render.object` ó an addressable render object (mesh instance, sprite, UI quad, video plane, etc.)
-- `render.camera` ó a camera used for projection
+- `render.scene` ‚Äî a renderable scene/context (may correspond to a viewport, layer, world camera)
+- `render.object` ‚Äî an addressable render object (mesh instance, sprite, UI quad, video plane, etc.)
+- `render.camera` ‚Äî a camera used for projection
 
 ### 5.2 Optional Types (Recommended)
 
 Endpoints SHOULD represent when meaningful:
 
-- `render.pass` ó render pass/layer (opaque categories like ìshadowî, ìmainî, ìuiî, ìpostî)
-- `render.material` ó material identity (not shader source; stable material IDs)
-- `render.skeleton` ó skeleton/rig entity (for animated characters)
-- `render.clip` ó animation clip handle (if engine exposes it cleanly)
+- `render.pass` ‚Äî render pass/layer (opaque categories like ‚Äúshadow‚Äù, ‚Äúmain‚Äù, ‚Äúui‚Äù, ‚Äúpost‚Äù)
+- `render.material` ‚Äî material identity (not shader source; stable material IDs)
+- `render.skeleton` ‚Äî skeleton/rig entity (for animated characters)
+- `render.clip` ‚Äî animation clip handle (if engine exposes it cleanly)
 
 ---
 
@@ -113,7 +113,7 @@ OmniRenderDiag does not impose a global topology constraint. It defines specific
   Object participates in scene.
 
 - `render:usesCamera` (scene ? camera)  
-  Scene uses camera for projection (may be multiple; see ß7.2).
+  Scene uses camera for projection (may be multiple; see ¬ß7.2).
 
 - `render:hasPass` (scene ? pass) (optional)  
   Scene defines or uses passes.
@@ -162,7 +162,7 @@ A `render.scene` SHOULD expose:
   - `width` (int), `height` (int)
   - `dpiScale` (number; optional)
 - `state.activeCameraId` (string; if multiple cameras possible)
-- `attributes.coordinateSpace` (string; see ß8.1)
+- `attributes.coordinateSpace` (string; see ¬ß8.1)
 
 ### 7.3 Camera State (Recommended)
 
@@ -180,13 +180,13 @@ A `render.camera` SHOULD expose enough data for reproducible projections:
 
 A `render.object` SHOULD expose:
 
-- `state.visible` (boolean) ó intended visible (not necessarily drawn)
-- `state.drawn` (boolean) ó actually drawn in last frame (if known)
+- `state.visible` (boolean) ‚Äî intended visible (not necessarily drawn)
+- `state.drawn` (boolean) ‚Äî actually drawn in last frame (if known)
 - `state.transform` (object; optional but useful):
   - position/rotation/scale or matrix (document format)
 - `state.lod` (string|int; optional)
 - `state.materialId` (string; optional)
-- `state.poseHash` (string; optional; see ß11.3)
+- `state.poseHash` (string; optional; see ¬ß11.3)
 
 ---
 
@@ -215,7 +215,7 @@ Projected bounds returned by OmniRenderDiag MUST use `"normalized"` by default:
   "space": "normalized",
   "rect": { "x": 0.25, "y": 0.10, "w": 0.30, "h": 0.40 }
 }
-````
+```
 
 If the object is offscreen, the endpoint MUST either:
 
@@ -232,19 +232,19 @@ OmniRenderDiag operations MAY be exposed via OGIF operation descriptors (`ogif.i
 
 OmniRenderDiag reserves:
 
-* `render.cap:inspectable` ó discoverable/introspectable
-* `render.cap:pickable` ó supports picking
-* `render.cap:visibleSetQueryable` ó supports visibility querying
-* `render.cap:boundsQueryable` ó supports projected bounds querying
-* `render.cap:cameraQueryable` ó supports camera inspection
-* `render.cap:poseHashQueryable` ó supports pose hash inspection (optional)
-* `render.cap:testControl` ó supports camera overrides/time stepping (TEST ONLY; optional)
+* `render.cap:inspectable` ‚Äî discoverable/introspectable
+* `render.cap:pickable` ‚Äî supports picking
+* `render.cap:visibleSetQueryable` ‚Äî supports visibility querying
+* `render.cap:boundsQueryable` ‚Äî supports projected bounds querying
+* `render.cap:cameraQueryable` ‚Äî supports camera inspection
+* `render.cap:poseHashQueryable` ‚Äî supports pose hash inspection (optional)
+* `render.cap:testControl` ‚Äî supports camera overrides/time stepping (TEST ONLY; optional)
 
 Capabilities are advertisements; authorization is enforced by policy.
 
 ### 9.2 Required Operations for RenderDiag-Read Conformance
 
-An endpoint claiming **OmniRenderDiag-Read Conformance** (ß13.1) MUST provide:
+An endpoint claiming **OmniRenderDiag-Read Conformance** (¬ß13.1) MUST provide:
 
 #### 9.2.1 `render.getFrameInfo`
 
@@ -315,7 +315,7 @@ Recommended params:
 
 Recommended result:
 
-* `bounds` in ß8.2 format (or null if not projectable)
+* `bounds` in ¬ß8.2 format (or null if not projectable)
 
 ### 9.3 Optional Operations
 
@@ -397,7 +397,7 @@ If events would reveal hidden objects or privileged diagnostics, the endpoint MU
 
 ## 11. Stability and Determinism Guidance
 
-### 11.1 ìRender Factsî Should Be Stable
+### 11.1 ‚ÄúRender Facts‚Äù Should Be Stable
 
 Render facts exposed by this profile SHOULD be stable across:
 
@@ -407,7 +407,7 @@ Render facts exposed by this profile SHOULD be stable across:
 
 Therefore, implementations SHOULD prefer:
 
-* object identity sets (ìvisible objectsî),
+* object identity sets (‚Äúvisible objects‚Äù),
 * broad bounds rectangles,
 * stable hashes (poseHash),
   over:
@@ -487,7 +487,7 @@ An endpoint is OmniRenderDiag-Read conformant if it:
   * `render.getVisibleSet`
   * `render.getBounds2D`
 * provides `normalized` coordinate space for inputs/outputs,
-* enforces security/redaction requirements (ß12),
+* enforces security/redaction requirements (¬ß12),
 * emits `render.event:FrameRendered` OR provides patch-observable `state.frameIndex`.
 
 ### 13.2 OmniRenderDiag-Control Conformance (Optional)
@@ -526,8 +526,8 @@ Recommended:
 
 This makes it easy to answer:
 
-* ìWhich world entity did the user click?î
-* ìIs the object representing Player42 visible?î
+* ‚ÄúWhich world entity did the user click?‚Äù
+* ‚ÄúIs the object representing Player42 visible?‚Äù
 
 ### 14.3 Coexisting With OmniDOM
 

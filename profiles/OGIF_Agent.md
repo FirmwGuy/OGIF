@@ -61,7 +61,7 @@ OmniAgent does NOT standardize:
 - model internals or weights,
 - training processes,
 - prompt formats,
-- a universal “chain-of-thought” introspection API,
+- a universal â€œchain-of-thoughtâ€ introspection API,
 - UI interaction trees (OmniDOM), streaming DAGs (OmniFlow), or declarative reconciliation (OmniState).
 
 OmniAgent is compatible with those profiles via OGIF cross-links.
@@ -112,22 +112,22 @@ OmniAgent defines reserved OGIF entity `type` values.
 
 An OmniAgent endpoint MUST represent at least:
 
-- `agent.agent` — an agent instance (identity + capabilities)
-- `agent.session` — a run/context for an agent (task or conversation)
+- `agent.agent` â€” an agent instance (identity + capabilities)
+- `agent.session` â€” a run/context for an agent (task or conversation)
 
 ### 6.2 Recommended Types
 
 Endpoints SHOULD represent, when applicable:
 
-- `agent.message` — an input or output message turn
-- `agent.goal` — a declared objective
-- `agent.contextItem` — a context entry (doc ref, snippet, constraint, memory ref)
-- `agent.action` — an action taken (tool call, internal step, external effect request)
-- `agent.observation` — a result received (tool output, environment feedback)
-- `agent.output` — a produced response (text/audio/structured)
-- `agent.artifact` — a persistent output (file, patch, dataset, report)
-- `agent.plan` and `agent.planStep` — optional planning representation
-- `agent.safetyEvent` — an explicit safety intervention record (optional; may also be an event-only)
+- `agent.message` â€” an input or output message turn
+- `agent.goal` â€” a declared objective
+- `agent.contextItem` â€” a context entry (doc ref, snippet, constraint, memory ref)
+- `agent.action` â€” an action taken (tool call, internal step, external effect request)
+- `agent.observation` â€” a result received (tool output, environment feedback)
+- `agent.output` â€” a produced response (text/audio/structured)
+- `agent.artifact` â€” a persistent output (file, patch, dataset, report)
+- `agent.plan` and `agent.planStep` â€” optional planning representation
+- `agent.safetyEvent` â€” an explicit safety intervention record (optional; may also be an event-only)
 
 ---
 
@@ -324,7 +324,7 @@ All OmniAgent event types MUST be prefixed `agent.event:` and use the OGIF event
 
 ### 12.1 Required Event Types
 
-An endpoint claiming OmniAgent-Read Conformance (§16.1) MUST emit events sufficient to observe session progression. At minimum it MUST emit:
+An endpoint claiming OmniAgent-Read Conformance (Â§16.1) MUST emit events sufficient to observe session progression. At minimum it MUST emit:
 
 - `agent.event:SessionStateChanged`
 - `agent.event:OutputProduced` (or equivalent event that indicates user-visible output)
@@ -355,7 +355,7 @@ If tools are used (integrated or delegated), the endpoint MUST also emit:
   "source": "agent://session/abc",
   "data": { "from": "running", "to": "waiting_for_tool", "turn": 7 }
 }
-````
+```
 
 #### 12.3.2 ToolCallRequested (Delegated Mode)
 
@@ -410,7 +410,7 @@ Authorization MUST be enforced by OmniPolicy (recommended) or equivalent.
 
 ### 13.2 Required Operations (Control Conformance)
 
-An endpoint claiming OmniAgent-Control Conformance (§16.2) MUST support:
+An endpoint claiming OmniAgent-Control Conformance (Â§16.2) MUST support:
 
 #### 13.2.1 `agent.createSession`
 
@@ -626,7 +626,7 @@ Traversal examples:
 
 1. Client creates session and sends user message:
 
-* “Summarize repo status.”
+* â€œSummarize repo status.â€
 
 2. Agent emits:
 

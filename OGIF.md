@@ -40,7 +40,7 @@ An OGIF implementation MUST enable an external client (or another module) to:
 OGIF does NOT standardize:
 
 - UI layout, rendering details, pixels, terminal bytes, audio waveforms.
-- A single ìone trueî model for all programs (profiles exist because paradigms differ).
+- A single ‚Äúone true‚Äù model for all programs (profiles exist because paradigms differ).
 - A particular schema language (JSON Schema is RECOMMENDED; Protobuf/others MAY be used).
 - Network authentication mechanisms (OGIF defines requirements and hooks; deployment chooses concrete auth).
 
@@ -133,7 +133,7 @@ An OGIF entity MUST be representable as JSON with at least:
   "attributes": {},
   "meta": {}
 }
-````
+```
 
 #### Required Fields
 
@@ -148,7 +148,7 @@ An OGIF entity MUST be representable as JSON with at least:
 
 * `name` (string)
 * `description` (string)
-* `schemaRef` (string; see ß6.5)
+* `schemaRef` (string; see ¬ß6.5)
 
 ### 6.2 Relation Schema (Core)
 
@@ -185,7 +185,7 @@ A graph snapshot MUST include:
 * `revision` (opaque string or integer; monotonic per endpoint)
 * `entities` (list)
 * `relations` (list)
-* `profiles` (list of active profile IDs; see ß10)
+* `profiles` (list of active profile IDs; see ¬ß10)
 
 Example:
 
@@ -215,7 +215,7 @@ Capabilities are strings that indicate affordances.
 * `state` MUST represent **current values** and **observable conditions**.
 * `attributes` SHOULD represent **stable metadata** (configuration, classification, hints).
 
-State SHOULD be patchable and observable via events (see ß8.4).
+State SHOULD be patchable and observable via events (see ¬ß8.4).
 
 ### 6.6 Schema References
 
@@ -231,7 +231,7 @@ OGIF does not mandate a schema system, but RECOMMENDS:
 * Protobuf descriptors for binary payloads,
 * or a documented custom schema registry.
 
-Implementations SHOULD expose schema discovery via operation descriptors (ß7).
+Implementations SHOULD expose schema discovery via operation descriptors (¬ß7).
 
 ---
 
@@ -313,7 +313,7 @@ Response MUST indicate acceptance and MAY include a result:
 }
 ```
 
-If rejected, the endpoint MUST return a protocol error (see ß12.3) or a typed rejection result if a profile requires it.
+If rejected, the endpoint MUST return a protocol error (see ¬ß12.3) or a typed rejection result if a profile requires it.
 
 ### 7.3 Preconditions and Safeguards (Recommended)
 
@@ -373,7 +373,7 @@ Endpoints that support observation MUST provide:
 Subscriptions MUST support filtering by:
 
 * event types,
-* entity selector (see ß9),
+* entity selector (see ¬ß9),
 * optionally relation selector.
 
 ### 8.3 Required Core Event Types
@@ -505,13 +505,13 @@ This document defines the core profile:
 
 Other profiles (e.g., UI tree interaction, dataflow DAG, RPC resources, ECS world) MUST be defined in separate specification documents that reference OGIF core.
 
-> Note: A future ìOmniDOMî specification can be defined as an OGIF profile that constrains relations to a tree and adds event propagation semantics. Any UI-specific addenda (e.g., stimulus integrity rules) belong to that profile, not OGIF core.
+> Note: A future ‚ÄúOmniDOM‚Äù specification can be defined as an OGIF profile that constrains relations to a tree and adds event propagation semantics. Any UI-specific addenda (e.g., stimulus integrity rules) belong to that profile, not OGIF core.
 
 ---
 
 ## 11. Facets and Multi-Layered Entities
 
-Complex systems often have the ìsame thingî represented in multiple subsystems.
+Complex systems often have the ‚Äúsame thing‚Äù represented in multiple subsystems.
 
 OGIF supports this using **facet relations** rather than forcing everything into one hierarchy.
 
@@ -539,7 +539,7 @@ Profiles MAY constrain these more strictly.
 
 In systems with many layers (e.g., a game), implementers SHOULD designate a canonical identity domain (often gameplay/ECS), and attach subsystem facets to canonical entities via `ogif:facetOf`.
 
-This avoids artificial ìone tree to rule them allî designs while preserving cross-layer queryability.
+This avoids artificial ‚Äúone tree to rule them all‚Äù designs while preserving cross-layer queryability.
 
 ---
 
@@ -673,7 +673,7 @@ Profiles MAY add stronger rules.
 
 ## 15. Determinism and Testability (Core Guidance)
 
-OGIF core RECOMMENDS (but does not require) a ìtest modeî in which:
+OGIF core RECOMMENDS (but does not require) a ‚Äútest mode‚Äù in which:
 
 * IDs are stable or have stable `meta.testTag`,
 * nondeterministic scheduling is minimized,
@@ -687,12 +687,12 @@ Time control is intentionally profile- or extension-defined, because semantics d
 
 An endpoint is **OGIF-Core Conformant** if it:
 
-1. Provides graph snapshots with entities and relations as specified (ß6.3).
-2. Supports OGIF-SEL-0 selectors and query methods (ß9).
-3. Emits at least graph/entity/relation change events when mutation occurs (ß8.3).
-4. Implements required method surface for its declared mode (control vs read-only) (ß12.1).
-5. Implements `ogif.getVersion` with profiles/features (ß12.2).
-6. Enforces basic security expectations (ß14).
+1. Provides graph snapshots with entities and relations as specified (¬ß6.3).
+2. Supports OGIF-SEL-0 selectors and query methods (¬ß9).
+3. Emits at least graph/entity/relation change events when mutation occurs (¬ß8.3).
+4. Implements required method surface for its declared mode (control vs read-only) (¬ß12.1).
+5. Implements `ogif.getVersion` with profiles/features (¬ß12.2).
+6. Enforces basic security expectations (¬ß14).
 
 Profiles define additional conformance requirements beyond OGIF core.
 

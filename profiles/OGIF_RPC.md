@@ -83,18 +83,18 @@ OmniRPC defines the following reserved entity `type` values.
 
 An OmniRPC endpoint MUST represent at least:
 
-- `rpc.service` — a callable service boundary (server, module, plugin)
-- `rpc.method` — a callable method (operation descriptor holder)
+- `rpc.service` â€” a callable service boundary (server, module, plugin)
+- `rpc.method` â€” a callable method (operation descriptor holder)
 
 ### 5.2 Optional Types (Recommended)
 
 Endpoints SHOULD represent, when applicable:
 
-- `rpc.resource` — a stateful addressable object (REST-like resource)
-- `rpc.interface` — a named interface/contract descriptor entity
-- `rpc.version` — explicit version entities for services/interfaces
-- `rpc.schema` — schema registry entries (or use `schemaRef` URIs only)
-- `rpc.errorType` — structured error taxonomy entries
+- `rpc.resource` â€” a stateful addressable object (REST-like resource)
+- `rpc.interface` â€” a named interface/contract descriptor entity
+- `rpc.version` â€” explicit version entities for services/interfaces
+- `rpc.schema` â€” schema registry entries (or use `schemaRef` URIs only)
+- `rpc.errorType` â€” structured error taxonomy entries
 
 ---
 
@@ -147,7 +147,7 @@ Every `rpc.method` MUST include, in `attributes`:
   - `"server_stream"` (optional)
   - `"client_stream"` (optional)
   - `"bidi_stream"` (optional)
-  - `"watch"` (optional; see §9)
+  - `"watch"` (optional; see Â§9)
 
 Every `rpc.method` SHOULD include:
 
@@ -158,7 +158,7 @@ Every `rpc.method` SHOULD include:
 - `attributes.sideEffects`:
   - `"none" | "state_change" | "external_effect" | "unknown"`
 - `attributes.timeoutMsSuggested` (integer)
-- `attributes.auth` (object; see §13)
+- `attributes.auth` (object; see Â§13)
 - `attributes.deprecated` (boolean)
 - `attributes.deprecationMessage` (string | null)
 
@@ -182,17 +182,17 @@ Example:
   "capabilities": ["rpc.cap:callable"],
   "state": {}
 }
-````
+```
 
 ### 7.3 Capabilities (Reserved)
 
 OmniRPC reserves these capability tokens:
 
-* `rpc.cap:inspectable` — entity discoverable/introspectable
-* `rpc.cap:callable` — method may be called via OmniRPC control surface
-* `rpc.cap:watchable` — resource/method supports watch subscription semantics
-* `rpc.cap:describable` — service/method supports rich description (schemas, compat)
-* `rpc.cap:adminOnly` — marker suggesting privileged access required (policy still enforced elsewhere)
+* `rpc.cap:inspectable` â€” entity discoverable/introspectable
+* `rpc.cap:callable` â€” method may be called via OmniRPC control surface
+* `rpc.cap:watchable` â€” resource/method supports watch subscription semantics
+* `rpc.cap:describable` â€” service/method supports rich description (schemas, compat)
+* `rpc.cap:adminOnly` â€” marker suggesting privileged access required (policy still enforced elsewhere)
 
 Implementations MUST NOT treat capability tokens as authorization. They are *advertisements*; actual authorization is enforced by policy.
 
@@ -204,7 +204,7 @@ OmniRPC defines standard operations for invocation. Implementations MAY expose t
 
 ### 8.1 Required Call Operation (Control Conformance)
 
-An OmniRPC endpoint claiming **Control Conformance** (§16.2) MUST support calling unary methods.
+An OmniRPC endpoint claiming **Control Conformance** (Â§16.2) MUST support calling unary methods.
 
 #### 8.1.1 Standard Invocation Form
 
@@ -376,7 +376,7 @@ This supports deterministic clients and reduces races.
 
 ### 10.1 Describe Operation (Read Conformance)
 
-An OmniRPC endpoint claiming **Read Conformance** (§16.1) MUST support discovering services/methods in the graph. It SHOULD also support a richer describe operation.
+An OmniRPC endpoint claiming **Read Conformance** (Â§16.1) MUST support discovering services/methods in the graph. It SHOULD also support a richer describe operation.
 
 RECOMMENDED operation:
 
@@ -421,7 +421,7 @@ OmniRPC event types MUST be prefixed `rpc.event:` and use the OGIF event envelop
 
 OmniRPC does not require emitting per-call telemetry by default (it can be sensitive/expensive). However:
 
-* If watch is supported, `rpc.event:ResourceChanged` is REQUIRED (§9.3).
+* If watch is supported, `rpc.event:ResourceChanged` is REQUIRED (Â§9.3).
 * If errors occur that affect availability, the endpoint MUST expose them via either:
 
   * OGIF patch events (state changes), and/or
@@ -435,7 +435,7 @@ If the endpoint exposes call telemetry, it SHOULD emit:
 * `rpc.event:CallCompleted`
 * `rpc.event:CallFailed`
 
-These events SHOULD be capability-gated (see §13.3) and MUST redact sensitive payload data.
+These events SHOULD be capability-gated (see Â§13.3) and MUST redact sensitive payload data.
 
 ### 11.3 Error Event (Recommended)
 
@@ -479,7 +479,7 @@ and SHOULD declare:
 * `attributes.auth.scopes` (e.g., `["user.read"]`)
 * `attributes.auth.audience` (string or list)
 
-This metadata is informational; enforcement is done by the endpoint’s security policy.
+This metadata is informational; enforcement is done by the endpointâ€™s security policy.
 
 ### 13.2 Redaction and Sensitive Data (MUST)
 
@@ -516,20 +516,20 @@ Production deployments SHOULD:
 
 ### 14.1 REST/HTTP
 
-* `rpc.service` ˜ API host / service boundary
-* `rpc.resource` ˜ REST resource instance (`/users/123`)
-* `rpc.method` ˜ endpoint action (`GET /users/{id}`, `POST /login`)
-* `rpc.watch` ˜ server-sent events / websocket feed / long polling
+* `rpc.service` Ëœ API host / service boundary
+* `rpc.resource` Ëœ REST resource instance (`/users/123`)
+* `rpc.method` Ëœ endpoint action (`GET /users/{id}`, `POST /login`)
+* `rpc.watch` Ëœ server-sent events / websocket feed / long polling
 
 ### 14.2 gRPC
 
-* `rpc.service` ˜ gRPC service
-* `rpc.method` ˜ RPC method
+* `rpc.service` Ëœ gRPC service
+* `rpc.method` Ëœ RPC method
 * `callType` aligns directly with unary/streaming modes
 
 ### 14.3 Local Module RPC
 
-* `rpc.service` ˜ module boundary
+* `rpc.service` Ëœ module boundary
 * transport may be stdio, pipes, shared memory, or in-proc bridge
 * OmniRPC still provides the introspection and compatibility contract plane
 

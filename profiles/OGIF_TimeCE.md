@@ -75,9 +75,9 @@ Endpoints implementing this extension MUST advertise it via `ogif.getVersion`:
     "timeControl": "ogif.ext:timecontrol-0"
   }
 }
-````
+```
 
-If only partial functionality is implemented (e.g., freeze/resume but not tick stepping), the endpoint MUST declare supported operations in the clock descriptor (§7.3).
+If only partial functionality is implemented (e.g., freeze/resume but not tick stepping), the endpoint MUST declare supported operations in the clock descriptor (Â§7.3).
 
 ---
 
@@ -99,11 +99,11 @@ Endpoints MAY expose multiple clocks.
 
 Each clock SHOULD declare a scope:
 
-* `endpoint` — global/default for the runtime
-* `ui` — OmniDOM/UI timebase
-* `world` — OmniECS simulation timebase
-* `render` — render loop timebase
-* `custom:<name>` — custom subsystems
+* `endpoint` â€” global/default for the runtime
+* `ui` â€” OmniDOM/UI timebase
+* `world` â€” OmniECS simulation timebase
+* `render` â€” render loop timebase
+* `custom:<name>` â€” custom subsystems
 
 ### 6.3 Clock Units
 
@@ -172,7 +172,7 @@ Clock entities advertise supported control actions via capabilities:
 * `time.cap:tickSteppable` (step ticks/frames supported)
 * `time.cap:adminOnly` (marker; policy enforced separately)
 
-Capabilities are advertisements; authorization is enforced by policy (§11).
+Capabilities are advertisements; authorization is enforced by policy (Â§11).
 
 ---
 
@@ -184,7 +184,7 @@ Every clock MUST expose in `state`:
 
 * `mode`: `"running" | "frozen"`
 * `now`: number (in declared `timeUnit`)
-* `rate`: number (default 1.0; see §8.3)
+* `rate`: number (default 1.0; see Â§8.3)
 
 If the clock supports ticks:
 
@@ -215,7 +215,7 @@ Operations MAY be exposed via OGIF operation descriptors (`ogif.invoke`) and/or 
 
 ### 9.1 Reserved Capabilities for Operations
 
-Endpoints MUST capability-gate time control operations (see §11). This extension reserves:
+Endpoints MUST capability-gate time control operations (see Â§11). This extension reserves:
 
 * `time.cap:freezable` ? freeze/resume
 * `time.cap:advanceable` ? advance
@@ -305,7 +305,7 @@ Effects:
 * Advances `state.now` consistently (if `dt` known/provided).
 * MUST cause the subsystem to run exactly that many deterministic update steps.
 
-If the subsystem defines ticks (e.g., OmniECS), this MUST align with that profile’s tick semantics.
+If the subsystem defines ticks (e.g., OmniECS), this MUST align with that profileâ€™s tick semantics.
 
 ### 9.6 Rate Control (Required if `time.cap:rateControllable`)
 

@@ -23,7 +23,7 @@ It defines:
 - with **which constraints** (argument constraints, visibility constraints)
 - and with **which obligations** (redaction, rate limits, auditing).
 
-OmniPolicy is designed to prevent OGIF from becoming an accidental ìroot shellî by making least privilege, redaction, and audit **consistent and inspectable**.
+OmniPolicy is designed to prevent OGIF from becoming an accidental ‚Äúroot shell‚Äù by making least privilege, redaction, and audit **consistent and inspectable**.
 
 ---
 
@@ -59,8 +59,8 @@ An OmniPolicy implementation MUST enable:
 ## 3. Non-goals
 
 OmniPolicy does NOT standardize:
-- authentication protocols (OAuth, mTLS, etc.) ó it consumes the authenticated identity as ìprincipalî.
-- a single global policy language for all deployments ó it defines a minimum interoperable rule model and allows extensions.
+- authentication protocols (OAuth, mTLS, etc.) ‚Äî it consumes the authenticated identity as ‚Äúprincipal‚Äù.
+- a single global policy language for all deployments ‚Äî it defines a minimum interoperable rule model and allows extensions.
 - UI semantics (OmniDOM), streaming semantics (OmniFlow), service semantics (OmniRPC), or simulation semantics (OmniECS).
 
 ---
@@ -82,7 +82,7 @@ A **principal** is an authenticated actor:
 - automation client.
 
 ### 5.2 Actions
-An **action** represents the intent of a request (read, query, invoke, subscribe, etc.). OmniPolicy standardizes action identifiers and allows extensions (ß8).
+An **action** represents the intent of a request (read, query, invoke, subscribe, etc.). OmniPolicy standardizes action identifiers and allows extensions (¬ß8).
 
 ### 5.3 Targets
 A **target** is what the request applies to:
@@ -103,12 +103,12 @@ A **decision** is the result of policy evaluation:
 ### 5.6 Disclosure Levels
 For read/query/subscribe, policies can choose how much to disclose:
 
-- `none` ó target not visible at all
-- `existence` ó ID/type only (opaque stub)
-- `metadata` ó ID/type/name/attributes (no state)
-- `full` ó full entity/event payload subject to redaction obligations
+- `none` ‚Äî target not visible at all
+- `existence` ‚Äî ID/type only (opaque stub)
+- `metadata` ‚Äî ID/type/name/attributes (no state)
+- `full` ‚Äî full entity/event payload subject to redaction obligations
 
-Disclosure levels exist to support ìexistence-onlyî visibility and invariant-preserving stubs.
+Disclosure levels exist to support ‚Äúexistence-only‚Äù visibility and invariant-preserving stubs.
 
 ---
 
@@ -141,13 +141,13 @@ OmniPolicy defines policy objects as OGIF entities. Endpoints MAY enforce policy
 
 ### 7.1 Entity Types (Reserved)
 
-- `policy.principal` ó an actor identity
-- `policy.role` ó a named role grouping permissions
-- `policy.permission` ó a named permission template (action + scope + constraints)
-- `policy.rule` ó a conditional rule (allow/deny + obligations + priority)
-- `policy.binding` ó attaches roles/permissions to principals (optionally conditional)
-- `policy.scope` ó named scoping object (e.g., ìprodî, ìtestî, ìsupportî, ìciî)
-- `policy.decision` ó (optional) decision record entity (audit store; may be externalized)
+- `policy.principal` ‚Äî an actor identity
+- `policy.role` ‚Äî a named role grouping permissions
+- `policy.permission` ‚Äî a named permission template (action + scope + constraints)
+- `policy.rule` ‚Äî a conditional rule (allow/deny + obligations + priority)
+- `policy.binding` ‚Äî attaches roles/permissions to principals (optionally conditional)
+- `policy.scope` ‚Äî named scoping object (e.g., ‚Äúprod‚Äù, ‚Äútest‚Äù, ‚Äúsupport‚Äù, ‚Äúci‚Äù)
+- `policy.decision` ‚Äî (optional) decision record entity (audit store; may be externalized)
 
 ### 7.2 Relation Kinds (Reserved)
 
@@ -175,24 +175,24 @@ OmniPolicy standardizes action identifiers to enable portable policies across en
 
 These MUST be supported as action identifiers in policy evaluation:
 
-- `ogif.action:readGraph` ó `ogif.getGraph`
-- `ogif.action:readEntity` ó `ogif.getEntity`
-- `ogif.action:query` ó `ogif.queryEntities` / `ogif.queryRelations`
-- `ogif.action:invoke` ó `ogif.invoke`
-- `ogif.action:subscribe` ó `ogif.subscribe`
-- `ogif.action:unsubscribe` ó `ogif.unsubscribe`
+- `ogif.action:readGraph` ‚Äî `ogif.getGraph`
+- `ogif.action:readEntity` ‚Äî `ogif.getEntity`
+- `ogif.action:query` ‚Äî `ogif.queryEntities` / `ogif.queryRelations`
+- `ogif.action:invoke` ‚Äî `ogif.invoke`
+- `ogif.action:subscribe` ‚Äî `ogif.subscribe`
+- `ogif.action:unsubscribe` ‚Äî `ogif.unsubscribe`
 
 ### 8.2 Recommended Profile Actions (Reserved)
 
 Endpoints SHOULD map common profile wrapper methods to these action identifiers when applicable:
 
 **OmniDOM**
-- `dom.action:dispatch` ó dispatch semantic UI events (e.g., `dom.dispatch`)
-- `dom.action:observeInput` ó observe sensitive input events (optional gating)
+- `dom.action:dispatch` ‚Äî dispatch semantic UI events (e.g., `dom.dispatch`)
+- `dom.action:observeInput` ‚Äî observe sensitive input events (optional gating)
 
 **OmniRPC**
-- `rpc.action:call` ó call a method (`rpc.call`)
-- `rpc.action:watch` ó watch resources (`rpc.watch`)
+- `rpc.action:call` ‚Äî call a method (`rpc.call`)
+- `rpc.action:watch` ‚Äî watch resources (`rpc.watch`)
 
 **OmniFlow**
 - `flow.action:connect`, `flow.action:disconnect`
@@ -232,13 +232,13 @@ OmniPolicy supports a hybrid RBAC + ABAC model:
 
 A `policy.permission` SHOULD define:
 
-- `attributes.action` (string; one of ß8 or namespaced)
-- `attributes.targetSelector` (string; OGIF selector describing the permissionís scope)
+- `attributes.action` (string; one of ¬ß8 or namespaced)
+- `attributes.targetSelector` (string; OGIF selector describing the permission‚Äôs scope)
 - optional `attributes.opIdPattern` (string; glob `*` allowed)
 - optional `attributes.eventTypePattern` (string; glob `*` allowed)
 - optional `attributes.disclosure` (`none|existence|metadata|full`)
-- optional `attributes.argConstraints` (object; see ß9.4)
-- optional `attributes.obligations` (object; see ß10)
+- optional `attributes.argConstraints` (object; see ¬ß9.4)
+- optional `attributes.obligations` (object; see ¬ß10)
 
 Example:
 ```json
@@ -255,7 +255,7 @@ Example:
     }
   }
 }
-````
+```
 
 ### 9.2 Rule Entity
 
@@ -268,10 +268,10 @@ A rule SHOULD define:
 * `attributes.action` (string; optional; if omitted applies to any action)
 * `attributes.targetSelector` (string; optional; if omitted applies to any target)
 * optional `attributes.opIdPattern` and `attributes.eventTypePattern`
-* optional `attributes.conditions[]` (see ß9.3)
+* optional `attributes.conditions[]` (see ¬ß9.3)
 * optional `attributes.disclosure` (overrides baseline disclosure)
-* optional `attributes.argConstraints` (see ß9.4)
-* optional `attributes.obligations` (see ß10)
+* optional `attributes.argConstraints` (see ¬ß9.4)
+* optional `attributes.obligations` (see ¬ß10)
 
 Example:
 
@@ -326,7 +326,7 @@ OmniPolicy supports two portable constraint forms:
   * `{ "path": "args.mode", "allow": ["safe","normal"] }`
   * `{ "path": "args.name", "matches": "^[a-z0-9_-]{1,32}$" }`
 
-If constraints are present and violated, the request MUST be rejected as ìpolicy deniedî (ß12).
+If constraints are present and violated, the request MUST be rejected as ‚Äúpolicy denied‚Äù (¬ß12).
 
 ---
 
@@ -394,7 +394,7 @@ When evaluating a request, the endpoint MUST construct an evaluation context wit
 
 * `principal.id` (string)
 * `principal.kind` (string; recommended values: `human|service|automation|agent`)
-* `request.action` (string; ß8)
+* `request.action` (string; ¬ß8)
 * `request.targetIds` (array of ids; may be empty for global operations)
 * `request.selector` (string; for queries/subscriptions; optional)
 * `request.opId` (string; for invocations; optional)
@@ -443,7 +443,7 @@ Obligations and constraints from all applicable allow candidates at the winning 
 
 If a request is denied, the endpoint MUST:
 
-* fail the request with an authorization error (ß12.5), OR
+* fail the request with an authorization error (¬ß12.5), OR
 * return an empty result only if explicitly configured by policy (discouraged; must be explicit).
 
 If allowed, the endpoint MUST apply disclosure and redaction:
@@ -473,7 +473,7 @@ If allowed, the endpoint MUST:
 * apply audit obligations,
 * and (if relevant) enforce additional target restrictions (e.g., only visible objects).
 
-If argument constraints fail, the endpoint MUST reject as policy denied (ß12.5).
+If argument constraints fail, the endpoint MUST reject as policy denied (¬ß12.5).
 
 ### 12.3 Subscriptions (Events)
 
@@ -494,7 +494,7 @@ Some profiles impose structural invariants:
 * OmniFlow may require valid port connectivity.
 * OmniECS requires component attachment constraints.
 
-When policy filtering removes entities, the endpoint MUST ensure that any profile-specific response format remains valid under the profileís rules, by pruning or stubbing consistently.
+When policy filtering removes entities, the endpoint MUST ensure that any profile-specific response format remains valid under the profile‚Äôs rules, by pruning or stubbing consistently.
 
 ### 12.5 Standard Denial Error
 
@@ -588,7 +588,7 @@ If there is no applicable allow permission/rule, the endpoint MUST deny.
 
 Policy definitions, bindings, and decision explanations can leak security posture. Endpoints MUST treat policy entities as sensitive and MUST apply policy enforcement to policy introspection itself.
 
-### 16.3 No ìCapability = Authorizationî Confusion (MUST)
+### 16.3 No ‚ÄúCapability = Authorization‚Äù Confusion (MUST)
 
 OGIF `capabilities[]` are advertisements. Authorization decisions MUST be made by OmniPolicy evaluation, not by capability presence alone.
 
@@ -611,8 +611,8 @@ An endpoint is conformant if it:
 
 * enforces allow/deny for OGIF reads/queries/invokes/subscriptions,
 * applies disclosure levels and redaction obligations,
-* supports default deny and the combining algorithm (ß11.3),
-* returns standard denial errors (ß12.5).
+* supports default deny and the combining algorithm (¬ß11.3),
+* returns standard denial errors (¬ß12.5).
 
 ### 17.2 OmniPolicy-Audit Conformance (Recommended)
 
@@ -632,24 +632,24 @@ Includes enforcement and additionally:
 
 ## 18. Worked Examples (Informative)
 
-### 18.1 ìUser-Equivalent UI Automationî (OmniDOM)
+### 18.1 ‚ÄúUser-Equivalent UI Automation‚Äù (OmniDOM)
 
 * Allow: `dom.action:dispatch` to `type("dom.node")`
 * Deny: any operation matching `time.action:*` in prod
 * Redact: `/state/value` for nodes with `attributes.sensitive=true`
 
-### 18.2 ìSupport Toolingî (Read-only + Safe RPC)
+### 18.2 ‚ÄúSupport Tooling‚Äù (Read-only + Safe RPC)
 
 * Allow: `ogif.action:readGraph`, `ogif.action:readEntity`, `ogif.action:query` (metadata disclosure)
 * Allow: `rpc.action:call` only where `targetSelector` matches `rpc.method` with `attributes.methodName` in allowlist (`Health`, `Status`)
 * Deny: `ecs.action:*`, `flow.action:*`, `render.action:*`
 
-### 18.3 ìAnti-Cheat Render Diagnosticsî
+### 18.3 ‚ÄúAnti-Cheat Render Diagnostics‚Äù
 
 * Allow: `render.action:pick` but filter hits to objects with `attributes.visibility="public"`
 * Deny: `render.action:getVisibleSet` in production for non-admin principals
 
-### 18.4 ìAI Agent Tool Scopeî
+### 18.4 ‚ÄúAI Agent Tool Scope‚Äù
 
 * Principal kind: `agent`
 * Allow: `rpc.action:call` only for a small set of safe tool methods
