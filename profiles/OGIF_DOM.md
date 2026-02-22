@@ -5,7 +5,7 @@
 **OGIF Profile ID:** `ogif.profile:omnidom-1`  
 **Profile Version:** 1.0.0 (Draft)  
 **Status:** Experimental / Proposed Standard  
-**Last Updated:** 2026-02-21  
+**Last Updated:** 2026-02-22  
 **Depends On:** OmniGraphIF (OGIF) Core `ogif-core-0` (v0.1.0 draft)  
 **Selector Baseline:** `ogif-sel-0` + OmniDOM Selector Extension `dom-sel-1` (defined herein)
 
@@ -598,9 +598,9 @@ If an interaction is gated by time-based behavior (animation completion, loading
 
 A renderer MUST NOT “unlock” controls solely because an animation ended without updating OmniDOM state/events.
 
-### 15.3 Optional Time Control Extension (dom-time-0)
+### 15.3 Optional Time Control Extension (`ogif.ext:timecontrol-0`)
 
-For deterministic testing, implementations MAY expose time control, advertised via `ogif.getVersion.features.timeControl = "dom-time-0"`.
+For deterministic testing, implementations MAY expose time control using the OGIF Time Control extension, advertised via `ogif.getVersion.features.timeControl = "ogif.ext:timecontrol-0"`.
 
 Recommended operations:
 

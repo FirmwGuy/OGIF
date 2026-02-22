@@ -5,7 +5,7 @@
 **Short Name:** OGIF  
 **Version:** 0.1.0 (Draft)  
 **Status:** Experimental / Proposed Standard  
-**Last Updated:** 2026-02-21
+**Last Updated:** 2026-02-22
 
 ---
 
